@@ -15,12 +15,12 @@ export interface Asset {
   notes?: string;
 }
 
-export type TransactionType = 'buy' | 'sell' | 'transfer';
+export type TransactionType = '買入' | '賣出';
 
 export interface Transaction {
   id: string;
   asset_id: string;
-  type: 'buy' | 'sell';
+  type: TransactionType;
   amount: number;
   price: number;
   total: number;
@@ -32,8 +32,8 @@ export interface Settings {
   currency: string;
   refresh_interval: number;
   display_options: {
-    show_chart: boolean;
-    default_view: string;
+    showChart: boolean;
+    defaultView: 'list' | 'grid';
     theme: string;
   };
 } 

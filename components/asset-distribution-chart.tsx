@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { Chart } from "chart.js/auto"
-import { Asset } from "@/types"
+import { Asset, AssetType } from "@/types"
 
 interface AssetDistributionChartProps {
   assets: Asset[];
@@ -15,7 +15,7 @@ export default function AssetDistributionChart({ assets }: AssetDistributionChar
   useEffect(() => {
     if (!chartRef.current) return
 
-    // Destroy existing chart
+    // 銷毀現有圖表
     if (chartInstance.current) {
       chartInstance.current.destroy()
     }
@@ -23,83 +23,80 @@ export default function AssetDistributionChart({ assets }: AssetDistributionChar
     const ctx = chartRef.current.getContext("2d")
     if (!ctx) return
 
-    // 計算各資產類型的總值
+    // 按資產類型分組並計算總市值
     const assetsByType = assets.reduce((acc, asset) => {
-      const type = asset.type;
-      if (!acc[type]) {
-        acc[type] = 0;
+      let displayType: string
+      
+      // 根據資產類型進行分類
+      switch (asset.type) {
+        case 'stock_tw':
+        case 'stock_us':
+          displayType = '股票'
+          break
+        case 'crypto':
+        case 'defi':
+        case 'wallet':
+          displayType = '加密貨幣'
+          break
+        case 'cash':
+          displayType = '現金'
+          break
+        default:
+          displayType = '其他'
       }
-      acc[type] += asset.market_value;
-      return acc;
-    }, {} as Record<string, number>);
+      
+      if (!acc[displayType]) {
+        acc[displayType] = 0
+      }
+      acc[displayType] += asset.market_value
+      return acc
+    }, {} as Record<string, number>)
 
-    // 計算總資產
-    const totalValue = Object.values(assetsByType).reduce((sum, value) => sum + value, 0);
+    const totalValue = Object.values(assetsByType).reduce((sum, value) => sum + value, 0)
+    
+    const data = Object.entries(assetsByType).map(([type, value]) => ({
+      name: type,
+      value: value,
+      percentage: ((value / totalValue) * 100).toFixed(1)
+    }))
 
-    // 計算百分比
-    const percentages = Object.entries(assetsByType).map(([type, value]) => ({
-      type,
-      percentage: (value / totalValue) * 100
-    }));
-
-    // 資產類型對應的顯示名稱
-    const typeLabels: Record<string, string> = {
-      'stock_tw': '台股',
-      'stock_us': '美股',
-      'crypto': '加密貨幣',
-      'cash': '現金',
-      'defi': 'DeFi 資產'
-    };
-
-    // Create new chart
+    // 創建新圖表
     chartInstance.current = new Chart(ctx, {
       type: "doughnut",
       data: {
-        labels: percentages.map(({ type }) => typeLabels[type] || type),
-        datasets: [
-          {
-            data: percentages.map(({ percentage }) => percentage),
-            backgroundColor: percentages.map(({ type }) => {
-              switch (type) {
-                case 'stock_tw':
-                case 'stock_us':
-                  return '#3b82f6'; // blue
-                case 'crypto':
-                  return '#a855f7'; // purple
-                case 'defi':
-                  return '#ec4899'; // pink
-                case 'cash':
-                  return '#eab308'; // yellow
-                default:
-                  return '#6b7280'; // gray
-              }
-            }),
-            borderWidth: 1,
-          },
-        ],
+        labels: data.map(item => `${item.name} ${item.percentage}%`),
+        datasets: [{
+          data: data.map(item => item.value),
+          backgroundColor: [
+            '#3b82f6', // 藍色 - 股票
+            '#10b981', // 綠色 - 加密貨幣
+            '#f59e0b', // 黃色 - 現金
+            '#6b7280', // 灰色 - 其他
+          ],
+          borderWidth: 1,
+        }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: "right",
+            position: 'right',
             labels: {
               boxWidth: 12,
               padding: 15,
-            },
+            }
           },
           tooltip: {
             callbacks: {
               label: (context) => {
-                const label = context.label || ""
                 const value = context.raw as number
-                return `${label}: ${value.toFixed(1)}%`
-              },
-            },
-          },
-        },
-      },
+                return `NT$ ${value.toLocaleString()}`
+              }
+            }
+          }
+        }
+      }
     })
 
     return () => {
