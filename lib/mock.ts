@@ -1,0 +1,110 @@
+import { Asset } from '@/types'
+
+export const mockAssets: Asset[] = [
+  {
+    id: '1',
+    name: '台積電',
+    type: 'stock_tw',
+    symbol: '2330.TW',
+    amount: 1000,
+    cost: 530,
+    current_price: 580,
+    market_value: 580000,
+    profit: 50000,
+    profit_percentage: 9.43,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    id: '2',
+    name: 'Apple Inc.',
+    type: 'stock_us',
+    symbol: 'AAPL',
+    amount: 100,
+    cost: 150,
+    current_price: 175,
+    market_value: 17500,
+    profit: 2500,
+    profit_percentage: 16.67,
+    last_updated: new Date().toISOString(),
+  },
+  {
+    id: '3',
+    name: 'Bitcoin',
+    type: 'crypto',
+    symbol: 'BTC',
+    amount: 0.5,
+    cost: 45000,
+    current_price: 50000,
+    market_value: 25000,
+    profit: 2500,
+    profit_percentage: 11.11,
+    last_updated: new Date().toISOString(),
+    notes: 'binance'
+  },
+  {
+    id: '4',
+    name: 'Ethereum',
+    type: 'crypto',
+    symbol: 'ETH',
+    amount: 5,
+    cost: 2500,
+    current_price: 3000,
+    market_value: 15000,
+    profit: 2500,
+    profit_percentage: 20,
+    last_updated: new Date().toISOString(),
+    notes: 'binance'
+  },
+  {
+    id: '5',
+    name: 'USDT',
+    type: 'cash',
+    symbol: 'USDT',
+    amount: 10000,
+    cost: 1,
+    current_price: 1,
+    market_value: 10000,
+    profit: 0,
+    profit_percentage: 0,
+    last_updated: new Date().toISOString(),
+    notes: 'USD'
+  },
+  {
+    id: '6',
+    name: 'ETH-USDT LP',
+    type: 'defi',
+    symbol: 'ETH-USDT',
+    amount: 1000,
+    cost: 1,
+    current_price: 1.2,
+    market_value: 1200,
+    profit: 200,
+    profit_percentage: 20,
+    last_updated: new Date().toISOString(),
+    notes: JSON.stringify({
+      protocol: 'Uniswap V3',
+      type: 'Liquidity Pool',
+      blockchain: 'Ethereum',
+      apy: '25%',
+      healthFactor: '2.5',
+      riskLevel: '中'
+    })
+  },
+  {
+    id: '7',
+    name: 'ETH',
+    type: 'wallet',
+    symbol: 'ETH',
+    amount: 2,
+    cost: 2000,
+    current_price: 3000,
+    market_value: 6000,
+    profit: 2000,
+    profit_percentage: 50,
+    last_updated: new Date().toISOString(),
+    notes: JSON.stringify({
+      address: '0x1234...5678',
+      blockchain: 'Ethereum'
+    })
+  }
+] 
